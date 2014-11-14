@@ -6,21 +6,25 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import silordordo.bo.Conexion;
 import silordordo.bo.Genero;
 import silordordo.bo.Pelicula;
+import static silordordo.dao.GenericDAO.getProperties;
 
 public class PeliculaDAO extends GenericDAO<Pelicula, Long> {
 
-    public final static String idPeliculaDAO = "pelicula_id";
-    public final static String estelaresDAO = "pelicula_estelares";
-    public final static String anioEstrenoDAO = "pelicula_anioestreno";
-    public final static String directorDAO = "pelicula_director";
-    public final static String duracionDAO = "pelicula_duracion";
-    public final static String clasificacionDAO = "pelicula_clasif";
-    public final static String tituloDAO = "pelicula_titulo";
+    private final static Properties propiedades = getProperties();
+    public final static String nombreTabla = propiedades.getProperty("pelicula-tabla");
+    public final static String idPeliculaDAO = propiedades.getProperty("pelicula-id");
+    public final static String estelaresDAO = propiedades.getProperty("pelicula-estelares");
+    public final static String anioEstrenoDAO = propiedades.getProperty("pelicula-anio");
+    public final static String directorDAO = propiedades.getProperty("pelicula-director");
+    public final static String duracionDAO = propiedades.getProperty("pelicula-duracion");
+    public final static String clasificacionDAO = propiedades.getProperty("pelicula-clasificacion");
+    public final static String tituloDAO = propiedades.getProperty("pelicula-titulo");
 
     public PeliculaDAO(Conexion conexion) {
         super(conexion);
@@ -32,7 +36,7 @@ public class PeliculaDAO extends GenericDAO<Pelicula, Long> {
         try {
             con.setAutoCommit(false);
             PreparedStatement ps = con.prepareStatement(
-                    "INSERT INTO pelicula ("
+                    "INSERT INTO " + nombreTabla + " ("
                     + tituloDAO + ", "
                     + anioEstrenoDAO + ", "
                     + directorDAO + ", "
@@ -71,7 +75,7 @@ public class PeliculaDAO extends GenericDAO<Pelicula, Long> {
         try {
             con.setAutoCommit(false);
             PreparedStatement ps = con.prepareStatement(
-                    "UPDATE pelicula SET "
+                    "UPDATE " + nombreTabla + " SET "
                     + tituloDAO + " = ?, "
                     + anioEstrenoDAO + " = ?::date, "
                     + directorDAO + " = ?, "
@@ -111,7 +115,7 @@ public class PeliculaDAO extends GenericDAO<Pelicula, Long> {
         try {
             con.setAutoCommit(false);
             PreparedStatement ps = con.prepareStatement(
-                    "DELETE FROM pelicula WHERE "
+                    "DELETE FROM " + nombreTabla  + " WHERE "
                     + idPeliculaDAO + " = ?;");
             ps.setLong(1, e.getIdPelicula());
             ps.execute();
@@ -135,7 +139,7 @@ public class PeliculaDAO extends GenericDAO<Pelicula, Long> {
         Connection con = DataBaseHelper.getConexion(conexion);
         ArrayList<Pelicula> lista = new ArrayList<>();
         String statement
-                = "SELECT * FROM pelicula;";
+                = "SELECT * FROM " + nombreTabla + ";";
         try {
             con.setAutoCommit(false);
             PreparedStatement ps = con.prepareStatement(statement);
@@ -173,7 +177,7 @@ public class PeliculaDAO extends GenericDAO<Pelicula, Long> {
         Connection con = DataBaseHelper.getConexion(conexion);
         Pelicula e = null;
         String statement
-                = "SELECT * FROM pelicula WHERE "
+                = "SELECT * FROM " + nombreTabla + " WHERE "
                 + idPeliculaDAO + " = ? ;";
         try {
             con.setAutoCommit(false);
@@ -192,7 +196,7 @@ public class PeliculaDAO extends GenericDAO<Pelicula, Long> {
             long idGenero = rs.getLong(GeneroDAO.idGeneroDAO);
             GeneroDAO generoDAO = new GeneroDAO(conexion);
             Genero genero = generoDAO.buscarPorId(idGenero);
-            e = new Pelicula(idPelicula, genero, "genero", estelares, titulo, anioEstreno, director, clasificacion, duracion);
+            e = new Pelicula(idPelicula, genero, "portada", estelares, titulo, anioEstreno, director, clasificacion, duracion);
             con.commit();
             con.close();
         } catch (SQLException ex) {

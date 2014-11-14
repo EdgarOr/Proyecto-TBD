@@ -6,23 +6,27 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import silordordo.bo.Conexion;
 import silordordo.bo.Empleado;
+import static silordordo.dao.GenericDAO.getProperties;
 
 public class EmpleadoDAO extends GenericDAO<Empleado, String> {
     
-    public final static String idEmpleadoDAO = "empleado_id";
-    public final static String nombreDAO = "empleado_nombre";
-    public final static String apellidoPaternoDAO = "empleado_appater";
-    public final static String apellidoMaternoDAO = "empleado_apmater";
-    public final static String horaEntradaDAO = "empleado_horaentrada";
-    public final static String horaSalidaDAO = "empleado_horasalida";
-    public final static String fechaNacimientoDAO = "empleado_fechanacimiento";
-    public final static String fechaRegistroDAO = "empleado_fecharegistro";
-    public final static String estadoDAO = "empleado_edo";
-    public final static String puestoDAO = "empleado_puesto";
+    private final static Properties propiedades = getProperties();
+    public final static String nombreTabla = propiedades.getProperty("empleado-tabla");
+    public final static String idEmpleadoDAO =propiedades.getProperty("empleado-id");
+    public final static String nombreDAO = propiedades.getProperty("empleado-nombre");
+    public final static String apellidoPaternoDAO = propiedades.getProperty("empleado-appater");
+    public final static String apellidoMaternoDAO = propiedades.getProperty("empleado-apmater");
+    public final static String horaEntradaDAO = propiedades.getProperty("empleado-horaentrada");
+    public final static String horaSalidaDAO = propiedades.getProperty("empleado-horasalida");
+    public final static String fechaNacimientoDAO = propiedades.getProperty("empleado-fechanacimiento");
+    public final static String fechaRegistroDAO = propiedades.getProperty("empleado-fecharegistro");
+    public final static String estadoDAO = propiedades.getProperty("empleado-estado");
+    public final static String puestoDAO = propiedades.getProperty("empleado-puesto");
     
     
     public EmpleadoDAO(Conexion conexion) {
@@ -35,7 +39,7 @@ public class EmpleadoDAO extends GenericDAO<Empleado, String> {
         try {
             con.setAutoCommit(false);
             PreparedStatement ps = con.prepareStatement(
-                    "INSERT INTO empleado ("
+                    "INSERT INTO " + nombreTabla + " ("
                             + idEmpleadoDAO +", "
                             + nombreDAO + ", "
                             + apellidoPaternoDAO + ", "
@@ -79,7 +83,7 @@ public class EmpleadoDAO extends GenericDAO<Empleado, String> {
         try {
             con.setAutoCommit(false);
             PreparedStatement ps = con.prepareStatement(
-                    "UPDATE empleado SET "
+                    "UPDATE " + nombreTabla + " SET "
                     + nombreDAO +" = ?, "
                     + apellidoPaternoDAO + " = ?, "
                     + apellidoMaternoDAO + " = ?, "
@@ -123,7 +127,7 @@ public class EmpleadoDAO extends GenericDAO<Empleado, String> {
         try {
             con.setAutoCommit(false);
             PreparedStatement ps = con.prepareStatement(
-                    "DELETE FROM empleado WHERE "
+                    "DELETE FROM " + nombreTabla + " WHERE "
                             + idEmpleadoDAO
                             + " = ?;");
             ps.setString(1, e.getIdEmpleado());
@@ -148,7 +152,7 @@ public class EmpleadoDAO extends GenericDAO<Empleado, String> {
         Connection con = DataBaseHelper.getConexion(conexion);
         ArrayList<Empleado> lista = new ArrayList<>();
         String statement
-                = "SELECT * FROM empleado;";
+                = "SELECT * FROM " + nombreTabla + ";";
         try {
             con.setAutoCommit(false);
             PreparedStatement ps = con.prepareStatement(statement);
@@ -186,9 +190,8 @@ public class EmpleadoDAO extends GenericDAO<Empleado, String> {
         Connection con = DataBaseHelper.getConexion(conexion);
         Empleado e = null;
         String statement
-                = "SELECT * FROM empleado WHERE "
-                + idEmpleadoDAO
-                + " = ? ;";
+                = "SELECT * FROM " + nombreTabla + " WHERE "
+                + idEmpleadoDAO + " = ? ;";
         try {
             con.setAutoCommit(false);
             PreparedStatement ps = con.prepareStatement(statement);

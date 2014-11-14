@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import silordordo.bo.Cliente;
@@ -14,11 +15,13 @@ import silordordo.bo.Empleado;
 import silordordo.bo.Venta;
 
 public class VentaDAO extends GenericDAO<Venta, Long> {
-
-    public final static String idVentaDAO = "venta_id";
-    public final static String fechaVentaDAO = "venta_fecha";
-    public final static String netoVentaDAO = "venta_neto";
-
+    
+    private final static Properties propiedades = getProperties();
+    public final static String nombreTabla = propiedades.getProperty("venta-tabla");
+    public final static String idVentaDAO = propiedades.getProperty("venta-id");
+    public final static String fechaVentaDAO = propiedades.getProperty("venta-fecha");
+    public final static String netoVentaDAO = propiedades.getProperty("venta-neto");
+    
     public VentaDAO(Conexion conexion) {
         super(conexion);
     }
@@ -63,7 +66,7 @@ public class VentaDAO extends GenericDAO<Venta, Long> {
         try {
             con.setAutoCommit(false);
             PreparedStatement ps = con.prepareStatement(
-                    "UPDATE venta SET "
+                    "UPDATE " + nombreTabla + " SET "
                     + fechaVentaDAO + " = ?::date, "
                     + netoVentaDAO + " = ?, "
                     + ClienteDAO.idClienteDAO + " = ?, "

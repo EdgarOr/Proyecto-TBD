@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import silordordo.bo.Cliente;
@@ -13,12 +14,14 @@ import silordordo.bo.Conexion;
 
 public class ClienteDAO extends GenericDAO<Cliente, String> {
 
-    public final static String idClienteDAO = "cliente_id";
-    public final static String nombreDAO = "cliente_nombre";
-    public final static String apellidoPaternoDAO = "cliente_appater";
-    public final static String apellidoMaternoDAO = "cliente_apmater";
-    public final static String fechaNacimientoDAO = "cliente_fechanacimiento";
-    public final static String fechaRegistroDAO = "cliente_fecharegistro";
+    private final static Properties propiedades = getProperties();
+    public final static String nombreTabla = propiedades.getProperty("cliente-tabla");
+    public final static String idClienteDAO = propiedades.getProperty("cliente-id");
+    public final static String nombreDAO = propiedades.getProperty("cliente-nombre");
+    public final static String apellidoPaternoDAO = propiedades.getProperty("cliente-apellido-paterno");
+    public final static String apellidoMaternoDAO = propiedades.getProperty("cliente-apellido-materno");
+    public final static String fechaNacimientoDAO = propiedades.getProperty("cliente-fecha-nacimiento");
+    public final static String fechaRegistroDAO = propiedades.getProperty("cliente-fecha-registro");
 
     public ClienteDAO(Conexion conexion) {
         super(conexion);
@@ -30,7 +33,7 @@ public class ClienteDAO extends GenericDAO<Cliente, String> {
         try {
             con.setAutoCommit(false);
             PreparedStatement ps = con.prepareStatement(
-                    "INSERT INTO cliente ("
+                    "INSERT INTO " + nombreTabla + " ("
                     + idClienteDAO + ", "
                     + nombreDAO + ", "
                     + apellidoPaternoDAO + ", "
@@ -66,7 +69,7 @@ public class ClienteDAO extends GenericDAO<Cliente, String> {
         try {
             con.setAutoCommit(false);
             PreparedStatement ps = con.prepareStatement(
-                    "UPDATE cliente SET "
+                    "UPDATE " + nombreTabla + " SET "
                     + nombreDAO + " = ?, "
                     + apellidoPaternoDAO + " = ?, "
                     + apellidoMaternoDAO + " = ?, "
@@ -102,7 +105,7 @@ public class ClienteDAO extends GenericDAO<Cliente, String> {
         try {
             con.setAutoCommit(false);
             PreparedStatement ps = con.prepareStatement(
-                    "DELETE FROM cliente WHERE "
+                    "DELETE FROM " + nombreTabla + " WHERE "
                     + idClienteDAO + " = ?;");
             ps.setString(1, e.getIdCliente());
             ps.execute();
@@ -126,7 +129,7 @@ public class ClienteDAO extends GenericDAO<Cliente, String> {
         Connection con = DataBaseHelper.getConexion(conexion);
         ArrayList<Cliente> lista = new ArrayList<>();
         String statement
-                = "SELECT * FROM cliente;";
+                = "SELECT * FROM " + nombreTabla + ";";
         try {
             con.setAutoCommit(false);
             PreparedStatement ps = con.prepareStatement(statement);
@@ -160,9 +163,8 @@ public class ClienteDAO extends GenericDAO<Cliente, String> {
         Connection con = DataBaseHelper.getConexion(conexion);
         Cliente e = null;
         String statement
-                = "SELECT * FROM cliente WHERE "
-                + idClienteDAO
-                + " = ? ;";
+                = "SELECT * FROM " + nombreTabla + " WHERE "
+                + idClienteDAO + " = ? ;";
         try {
             con.setAutoCommit(false);
             PreparedStatement ps = con.prepareStatement(statement);

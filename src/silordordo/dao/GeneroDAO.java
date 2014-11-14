@@ -6,16 +6,21 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import silordordo.bo.Conexion;
 import silordordo.bo.Genero;
+import static silordordo.dao.GenericDAO.getProperties;
 
 public class GeneroDAO extends GenericDAO<Genero, Long> {
-
-    public final static String idGeneroDAO = "genero_id";
-    public final static String nombreDAO = "genero_nombre";
-    public final static String descripcionDAO = "genero_descripcion";
+    
+    private final static Properties propiedades = getProperties();
+    
+    public final static String nombreTabla = propiedades.getProperty("genero-tabla");
+    public final static String idGeneroDAO = propiedades.getProperty("genero-id");
+    public final static String nombreDAO = propiedades.getProperty("genero-nombre");
+    public final static String descripcionDAO = propiedades.getProperty("genero-descripcion");
 
     public GeneroDAO(Conexion conexion) {
         super(conexion);
@@ -27,7 +32,7 @@ public class GeneroDAO extends GenericDAO<Genero, Long> {
         try {
             con.setAutoCommit(false);
             PreparedStatement ps = con.prepareStatement(
-                    "INSERT INTO genero ("
+                    "INSERT INTO " + nombreTabla + " ("
                     + nombreDAO + ", "
                     + descripcionDAO + ")"
                     + " VALUES (?, ?);");
@@ -52,7 +57,7 @@ public class GeneroDAO extends GenericDAO<Genero, Long> {
     public boolean actualizar(Genero n) {
         Connection con = DataBaseHelper.getConexion(conexion);
         String statement
-                = "UPDATE genero SET "
+                = "UPDATE " + nombreTabla + " SET "
                 + nombreDAO + " = ?, "
                 + descripcionDAO + " = ? WHERE "
                 + idGeneroDAO
@@ -84,7 +89,7 @@ public class GeneroDAO extends GenericDAO<Genero, Long> {
         Connection con = DataBaseHelper.getConexion(conexion);
         ArrayList<Genero> lista = new ArrayList<>();
         String statement
-                = "SELECT * FROM genero;";
+                = "SELECT * FROM " + nombreTabla + ";";
         try {
             con.setAutoCommit(false);
             PreparedStatement ps = con.prepareStatement(statement);
@@ -114,7 +119,7 @@ public class GeneroDAO extends GenericDAO<Genero, Long> {
     public boolean eliminar(Genero e) {
         Connection con = DataBaseHelper.getConexion(conexion);
         String statement
-                = "DELETE FROM genero WHERE "
+                = "DELETE FROM " + nombreTabla + " WHERE "
                 + idGeneroDAO
                 + " = ?";
         try {
@@ -142,9 +147,8 @@ public class GeneroDAO extends GenericDAO<Genero, Long> {
         Connection con = DataBaseHelper.getConexion(conexion);
         Genero e = null;
         String statement
-                = "SELECT * FROM genero WHERE "
-                + idGeneroDAO
-                + " = ?;";
+                = "SELECT * FROM " + nombreTabla + " WHERE "
+                + idGeneroDAO + " = ?;";
         try {
             con.setAutoCommit(false);
             PreparedStatement ps = con.prepareStatement(statement);

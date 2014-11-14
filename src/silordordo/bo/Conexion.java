@@ -1,16 +1,46 @@
 package silordordo.bo;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import silordordo.dao.ClienteDAO;
+
 public class Conexion {
     
+    private Properties propiedades;
     private String driver = "org.postgresql.Driver";
     private String url = "jdbc:postgresql://";
     private String host = "localhost";
-    private String port = "5432";
-    private String baseDatos = "LOSI";
-    private String user = "postgres";
-    private String password = "1";
+    private String port;
+    private String baseDatos;
+    private String user;
+    private String password;
 
     public Conexion() {
+        propiedades = getProperties();
+        host = propiedades.getProperty("host");
+        port = propiedades.getProperty("puerto");
+        baseDatos = propiedades.getProperty("nombre-bd");
+        user = propiedades.getProperty("usuario");
+        password = propiedades.getProperty("password");
+    }
+    
+    private Properties getProperties() {
+        Properties defaultProps = new Properties();
+        Properties props = null;
+        FileInputStream fis;
+        try {
+            fis = new FileInputStream("res/default-properties/defaultconfig.properties");
+            defaultProps.load(fis);
+            props = new Properties(defaultProps);
+            fis = new FileInputStream("res/properties/config.properties");
+            props.load(fis);
+        } catch (IOException ex) {
+            Logger.getLogger(ClienteDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return props;
     }
 
     

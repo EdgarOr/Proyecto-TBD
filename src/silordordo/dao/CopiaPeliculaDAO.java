@@ -1,27 +1,33 @@
 package silordordo.dao;
 
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import silordordo.bo.Conexion;
 import silordordo.bo.CopiaPelicula;
 import silordordo.bo.Pelicula;
 
+
 public class CopiaPeliculaDAO extends GenericDAO<CopiaPelicula, Long> {
 
-    public final static String idCopiaPeliculaDAO = "copia_id";
-    public final static String codigoDAO = "copia_codigo";
-    public final static String formatoDAO = "copia_fmto";
-    public final static String fechaAdquisicionDAO = "copia_fechaadquisicion";
-    public final static String precioDAO = "copia_precio";
-    public final static String estadoDAO = "copia_edo";
-    public final static String comentariosDAO = "copia_comentarios";
-
+    private final static Properties propiedades = getProperties();
+    public final static String nombreTabla = propiedades.getProperty("copia-tabla");
+    public final static String idCopiaPeliculaDAO = propiedades.getProperty("copia-id");
+    public final static String codigoDAO = propiedades.getProperty("copia-codigo");
+    public final static String formatoDAO = propiedades.getProperty("copia-formato");
+    public final static String fechaAdquisicionDAO = propiedades.getProperty("copia-fecha-adquisicion");
+    public final static String precioDAO = propiedades.getProperty("copia-precio");
+    public final static String estadoDAO = propiedades.getProperty("copia-estado");
+    public final static String comentariosDAO = propiedades.getProperty("copia-comentarios");
+   
     public CopiaPeliculaDAO(Conexion conexion) {
         super(conexion);
     }
@@ -32,7 +38,7 @@ public class CopiaPeliculaDAO extends GenericDAO<CopiaPelicula, Long> {
         try {
             con.setAutoCommit(false);
             PreparedStatement ps = con.prepareStatement(
-                    "INSERT INTO copia_pelicula ("
+                    "INSERT INTO " + nombreTabla + " ("
                     + codigoDAO + ", "
                     + formatoDAO + ", "
                     + fechaAdquisicionDAO + ", "
@@ -71,7 +77,7 @@ public class CopiaPeliculaDAO extends GenericDAO<CopiaPelicula, Long> {
         try {
             con.setAutoCommit(false);
             PreparedStatement ps = con.prepareStatement(
-                    "UPDATE copia_pelicula SET "
+                    "UPDATE " + nombreTabla + " SET "
                     + codigoDAO + " = ?, "
                     + formatoDAO + " = ?::copia_formato, "
                     + fechaAdquisicionDAO + " = ?::date, "
@@ -109,9 +115,8 @@ public class CopiaPeliculaDAO extends GenericDAO<CopiaPelicula, Long> {
         try {
             con.setAutoCommit(false);
             PreparedStatement ps = con.prepareStatement(
-                    "DELETE FROM copia_pelicula WHERE "
-                    + idCopiaPeliculaDAO
-                    + " = ?;");
+                    "DELETE FROM " + nombreTabla + " WHERE "
+                    + idCopiaPeliculaDAO + " = ?;");
             ps.setLong(1, e.getIdCopiaPelicula());
             ps.execute();
             con.commit();
@@ -134,7 +139,7 @@ public class CopiaPeliculaDAO extends GenericDAO<CopiaPelicula, Long> {
         Connection con = DataBaseHelper.getConexion(conexion);
         ArrayList<CopiaPelicula> lista = new ArrayList<>();
         String statement
-                = "SELECT * FROM copia_pelicula;";
+                = "SELECT * FROM " + nombreTabla + ";";
         try {
             con.setAutoCommit(false);
             PreparedStatement ps = con.prepareStatement(statement);
@@ -171,7 +176,7 @@ public class CopiaPeliculaDAO extends GenericDAO<CopiaPelicula, Long> {
         Connection con = DataBaseHelper.getConexion(conexion);
         CopiaPelicula e = null;
         String statement
-                = "SELECT * FROM copia_pelicula WHERE "
+                = "SELECT * FROM " + nombreTabla + " WHERE "
                 + idCopiaPeliculaDAO + " = ? ;";
         try {
             con.setAutoCommit(false);
